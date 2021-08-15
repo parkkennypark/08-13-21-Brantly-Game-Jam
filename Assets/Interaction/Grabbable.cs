@@ -108,6 +108,8 @@ public class Grabbable : Interactable
         }
 
         SetAnimalComponents(false);
+
+        grabber = null;
     }
 
     public void Throw()
@@ -126,6 +128,7 @@ public class Grabbable : Interactable
             transform.Rotate(0, 0, 180);
         }
 
+        grabber = null;
     }
 
     public void PutInTruck()

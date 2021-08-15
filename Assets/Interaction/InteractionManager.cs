@@ -38,7 +38,7 @@ public class InteractionManager : MonoBehaviour
 
     private void SetInteractionText(string text)
     {
-        interactionText.text = "[E] " + text;
+        interactionText.text = text;
     }
 
     public void SetInteractable(Interactable interactable)

@@ -6284,7 +6284,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745962032571267155}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0a1ee8ae1f2bbd245a6d48cec058ba33, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.2
@@ -6325,6 +6325,7 @@ MonoBehaviour:
   grabOffset: {x: 0, y: 1, z: 0}
   flip: 1
   isCrop: 0
+  grabber: {fileID: 0}
 --- !u!195 &1745962032571267161
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -6334,7 +6335,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1745962032571267155}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.2
+  m_Radius: 0.5
   m_Speed: 3
   m_Acceleration: 8
   avoidancePriority: 50
@@ -6344,7 +6345,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 0
   m_Height: 0.00001
-  m_BaseOffset: 0.25
+  m_BaseOffset: 0.27
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &1745962032571267158
@@ -6371,7 +6372,7 @@ PrefabInstance:
     - target: {fileID: 127186523086093055, guid: 470bfc06ca37ce64097b8f7920d62c5f,
         type: 3}
       propertyPath: offset.y
-      value: -0.329
+      value: -0.26
       objectReference: {fileID: 0}
     - target: {fileID: 661510997109570934, guid: 470bfc06ca37ce64097b8f7920d62c5f,
         type: 3}

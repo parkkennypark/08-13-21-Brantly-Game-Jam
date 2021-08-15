@@ -15,6 +15,12 @@ public class ChickenManager : MonoBehaviour
 
     void Start()
     {
+        currSpawnDelay = 1000;
+        GameManager.instance.OnGameStart += OnGameStart;
+    }
+
+    void OnGameStart()
+    {
         ResetTimer();
     }
 

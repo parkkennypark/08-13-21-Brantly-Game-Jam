@@ -27,14 +27,25 @@ public class Truck : MonoBehaviour
     void Awake()
     {
         instance = this;
+
     }
 
     void Start()
     {
-        SetupStockDictionary();
-        SetupGUI();
+        requestTooltip.gameObject.SetActive(false);
+        GameManager.instance.OnGameStart += OnGameStart;
 
         patience = GetComponentInChildren<Patience>();
+        patience.SetVisible(false);
+
+    }
+
+    void OnGameStart()
+    {
+        SetupStockDictionary();
+        SetupGUI();
+        requestTooltip.gameObject.SetActive(true);
+        patience.SetVisible(true);
         patience.StartTimer();
         patience.OnTimerTimeout += OutOfPatience;
     }
@@ -95,7 +106,7 @@ public class Truck : MonoBehaviour
 
     private void Leave()
     {
-        print("CYA");
+        GameManager.instance.WinGame();
     }
 
     private void OnTriggerEnter(Collider other)

@@ -25,6 +25,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.instance.gameStarted)
+        {
+            return;
+        }
+
         if (Input.GetButtonDown("Interact"))
         {
             if (InteractionManager.instance.GetInteractable() != null)
@@ -70,6 +75,11 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!GameManager.instance.gameStarted)
+        {
+            return;
+        }
+
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
         Vector3 moveDir = new Vector3(input.x, 0, input.y);
 
@@ -85,8 +95,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
+        if (!GameManager.instance.gameStarted)
+        {
+            return;
+        }
+
         Interactable interactable = other.GetComponent<Interactable>();
         if (interactable != null && interactable.isInteractable)
         {

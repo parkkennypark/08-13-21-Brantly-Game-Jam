@@ -48,6 +48,11 @@ public class Pig : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.instance.gameStarted)
+        {
+            return;
+        }
+
         switch (state)
         {
             case State.IN_PEN:
@@ -68,6 +73,7 @@ public class Pig : MonoBehaviour
                 }
                 if (!GameManager.instance.crops.Contains(navTarget))
                 {
+                    print("PANIC!");
                     NavToRandomCrop();
                 }
                 break;
@@ -87,7 +93,7 @@ public class Pig : MonoBehaviour
                 break;
         }
 
-        animator.SetFloat("speed", rigidbody.velocity.magnitude / nav.speed);
+        animator.SetFloat("speed", nav.velocity.magnitude / nav.speed);
     }
 
     public void ReturnedToPen()

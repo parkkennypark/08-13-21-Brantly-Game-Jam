@@ -75,17 +75,17 @@ public class Chicken : MonoBehaviour
         {
             case State.NAVING_TO_CROP:
                 nav.enabled = true;
-                NavToRandomCrop();
                 nav.isStopped = false;
+                NavToRandomCrop();
                 break;
             case State.RUNNING:
                 nav.enabled = true;
-                SetRandomPosition();
                 nav.isStopped = false;
+                SetRandomPosition();
                 break;
             case State.GRABBED:
                 nav.enabled = false;
-                nav.isStopped = true;
+                // nav.isStopped = true;
                 // rigidbody.isKinematic = true;
                 if (navTarget)
                 {
@@ -111,7 +111,10 @@ public class Chicken : MonoBehaviour
 
     void SetRandomPosition()
     {
-        nav.destination = GetRandomLocation();
+        if (nav.isActiveAndEnabled)
+        {
+            nav.destination = GetRandomLocation();
+        }
     }
 
     Vector3 GetRandomLocation()
