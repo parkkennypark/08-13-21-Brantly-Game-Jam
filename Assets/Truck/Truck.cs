@@ -95,7 +95,6 @@ public class Truck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print(other);
         Grabbable grabbable = other.gameObject.GetComponent<Grabbable>();
         if (grabbable != null)
         {
