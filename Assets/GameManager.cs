@@ -65,4 +65,16 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void AddToCrops(Grabbable crop)
+    {
+        crops.Add(crop);
+        foreach (Truck.Request request in Truck.instance.requests)
+        {
+            if (request.itemName == crop.itemName)
+            {
+                request.amount++;
+            }
+        }
+    }
 }

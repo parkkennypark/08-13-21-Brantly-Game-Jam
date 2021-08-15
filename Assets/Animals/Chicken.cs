@@ -7,8 +7,10 @@ public class Chicken : MonoBehaviour
 {
     public enum State
     {
-        IN_PEN,
-        CRAZED
+        NAVING_TO_CROP,
+        RUNNING,
+        GRABBED,
+        THROWN
     }
 
     public float speed;
@@ -17,48 +19,99 @@ public class Chicken : MonoBehaviour
 
     private new Rigidbody rigidbody;
     private float timeUntilDirectionChange;
+    private Grabbable navTarget;
+    private NavMeshAgent nav;
 
     private State state;
-    private Vector3 direction;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
-        ChangeState(State.CRAZED);
+        nav = GetComponent<NavMeshAgent>();
+        ChangeState(State.NAVING_TO_CROP);
     }
 
     void Update()
     {
-        if (state == State.CRAZED)
+        switch (state)
         {
-            rigidbody.velocity = direction * speed;
-            timeUntilDirectionChange -= Time.deltaTime;
-            if (timeUntilDirectionChange <= 0)
-            {
-                SetRandomDirection();
-                timeUntilDirectionChange = changeDirectionDelay * Random.Range(0.5f, 2);
-            }
+            case State.NAVING_TO_CROP:
+                if ((navTarget.transform.position - transform.position).magnitude < 0.5)
+                {
+                    navTarget.Grab(transform);
+                }
+                if (navTarget != null)
+                {
+                    nav.destination = navTarget.transform.position;
+                }
+                break;
+            case State.RUNNING:
+                timeUntilDirectionChange -= Time.deltaTime;
+                if (timeUntilDirectionChange <= 0 || (transform.position - nav.destination).magnitude < 1)
+                {
+                    SetRandomPosition();
+                    timeUntilDirectionChange = changeDirectionDelay * Random.Range(0.5f, 2);
+                }
+                break;
 
+            case State.THROWN:
+                if (rigidbody.velocity.magnitude <= 0.2)
+                {
+                    ChangeState(State.NAVING_TO_CROP);
+                }
+                break;
         }
 
-        Quaternion targetRot = Quaternion.LookRotation(rigidbody.velocity, Vector3.up);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
+        // Quaternion targetRot = Quaternion.LookRotation(rigidbody.velocity, Vector3.up);
+        // transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
 
     }
 
-    void ChangeState(State newState)
+    public void ChangeState(State newState)
     {
         state = newState;
 
-        if (state == State.CRAZED)
+        switch (state)
         {
-            SetRandomDirection();
+            case State.NAVING_TO_CROP:
+                nav.enabled = true;
+                NavToRandomCrop();
+                nav.isStopped = false;
+                break;
+            case State.RUNNING:
+                nav.enabled = true;
+                SetRandomPosition();
+                nav.isStopped = false;
+                break;
+            case State.GRABBED:
+                nav.enabled = false;
+                nav.isStopped = true;
+                // rigidbody.isKinematic = true;
+                if (navTarget)
+                {
+                    navTarget.Drop();
+                }
+                break;
+            case State.THROWN:
+                nav.enabled = false;
+                // rigidbody.isKinematic = false;
+                break;
         }
     }
 
-    void SetRandomDirection()
+    public void OnThrown()
     {
-        direction = (GetRandomLocation() - transform.position).normalized;
+        ChangeState(State.THROWN);
+    }
+
+    public void OnGrabbed()
+    {
+        ChangeState(State.GRABBED);
+    }
+
+    void SetRandomPosition()
+    {
+        nav.destination = GetRandomLocation();
     }
 
     Vector3 GetRandomLocation()
@@ -78,7 +131,33 @@ public class Chicken : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        print("HIT SOMETHING");
-        SetRandomDirection();
+        SetRandomPosition();
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Coop" && state == State.THROWN)
+        {
+            other.GetComponent<Animator>().SetTrigger("cooped");
+            Destroy(gameObject);
+        }
+    }
+
+    void NavToRandomCrop()
+    {
+        List<Grabbable> crops = GameManager.instance.crops;
+        if (navTarget && crops.Contains(navTarget))
+        {
+            return;
+        }
+
+        if (crops.Count == 0)
+        {
+            ChangeState(State.RUNNING);
+            return;
+        }
+
+        navTarget = crops[Random.Range(0, crops.Count)];
+        // navTarget = crop;
     }
 }

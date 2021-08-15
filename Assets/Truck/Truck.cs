@@ -5,6 +5,8 @@ using TMPro;
 
 public class Truck : MonoBehaviour
 {
+    public static Truck instance;
+
     [System.Serializable]
     public class Request
     {
@@ -22,7 +24,11 @@ public class Truck : MonoBehaviour
     private Patience patience;
     private Dictionary<string, int> currentStock = new Dictionary<string, int>();
 
-    // Start is called before the first frame update
+    void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         SetupStockDictionary();
@@ -33,7 +39,6 @@ public class Truck : MonoBehaviour
         patience.OnTimerTimeout += OutOfPatience;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
@@ -108,6 +113,7 @@ public class Truck : MonoBehaviour
                     currentStock[grabbable.itemName]++;
                     UpdateGUI();
                     CheckConditions();
+                    GetComponent<Animator>().SetTrigger("cooped");
                 }
             }
         }

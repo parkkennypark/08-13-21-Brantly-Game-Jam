@@ -48,6 +48,11 @@ public class InteractionManager : MonoBehaviour
             return;
         }
 
+        if (interactable.GetComponent<Grabbable>() && interactable.GetComponent<Grabbable>().grabber && interactable.GetComponent<Grabbable>().grabber != Player.instance.transform)
+        {
+            return;
+        }
+
         currentInteractable = interactable;
         SetInteractionTooltipActive(true);
         SetInteractionText(currentInteractable.GetInteractAction());

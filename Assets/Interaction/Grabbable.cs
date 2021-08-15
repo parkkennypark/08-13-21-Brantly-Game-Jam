@@ -13,6 +13,8 @@ public class Grabbable : Interactable
     private bool grabbed;
     private new Rigidbody rigidbody;
 
+    public Transform grabber;
+
     void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -22,7 +24,7 @@ public class Grabbable : Interactable
     {
         if (isCrop)
         {
-            GameManager.instance.crops.Add(this);
+            GameManager.instance.AddToCrops(this);
         }
     }
 
@@ -34,7 +36,7 @@ public class Grabbable : Interactable
         }
         else
         {
-            Grab();
+            Grab(Player.instance.transform);
         }
     }
 
@@ -47,9 +49,9 @@ public class Grabbable : Interactable
     {
         if (grabbed)
         {
-            transform.position = Player.instance.transform.position + grabOffset;
+            transform.position = grabber.position + grabOffset;
             Vector3 eulerAngles = transform.eulerAngles;
-            eulerAngles.y = Player.instance.transform.eulerAngles.y;
+            eulerAngles.y = grabber.eulerAngles.y;
             eulerAngles.x = flip ? 180 : 0;
             transform.eulerAngles = eulerAngles;
         }
@@ -66,13 +68,24 @@ public class Grabbable : Interactable
         }
         if (GetComponent<Chicken>())
         {
-            GetComponent<Chicken>().enabled = grabbed;
+            if (grabbed)
+                GetComponent<Chicken>().OnGrabbed();
+            else
+                GetComponent<Chicken>().OnThrown();
         }
     }
 
-    public void Grab()
+    public void Grab(Transform grabber)
     {
-        Player.instance.SetGrabbedObject(this);
+        this.grabber = grabber;
+        if (grabber == Player.instance.transform)
+        {
+            Player.instance.SetGrabbedObject(this);
+        }
+        else
+        {
+            grabber.GetComponent<Chicken>().ChangeState(Chicken.State.RUNNING);
+        }
         rigidbody.isKinematic = true;
         grabbed = true;
         // isInteractable = false;
@@ -82,7 +95,10 @@ public class Grabbable : Interactable
 
     public void Drop()
     {
-        Player.instance.ClearGrabbedObject();
+        if (grabber == Player.instance.transform)
+        {
+            Player.instance.ClearGrabbedObject();
+        }
         rigidbody.isKinematic = false;
         grabbed = false;
         // isInteractable = true;

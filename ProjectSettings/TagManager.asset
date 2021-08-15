@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Pen
+  - Coop
+  - Well
   layers:
   - Default
   - TransparentFX
@@ -14,8 +16,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Animal
+  - Animal Blocker
   - 
   - 
   - 

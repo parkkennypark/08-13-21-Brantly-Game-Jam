@@ -36,7 +36,7 @@ public class Pig : MonoBehaviour
     void Start()
     {
         ChangeState(State.IN_PEN);
-        currentRoamDelay -= Random.Range(0, roamDelayBase);
+        // currentRoamDelay -= Random.Range(0, roamDelayBase);
 
         patience.OnTimerTimeout += EatFood;
     }
@@ -98,7 +98,6 @@ public class Pig : MonoBehaviour
     void ChangeState(State newState)
     {
         state = newState;
-        print("state changed to " + newState);
 
         nav.enabled = true;
         patience.SetVisible(false);
@@ -141,6 +140,11 @@ public class Pig : MonoBehaviour
     void NavToRandomCrop()
     {
         List<Grabbable> crops = GameManager.instance.crops;
+        if (navTarget && crops.Contains(navTarget))
+        {
+            return;
+        }
+
         if (crops.Count == 0)
         {
             ChangeState(State.IN_PEN);
@@ -162,6 +166,7 @@ public class Pig : MonoBehaviour
         if (other.tag == "Pen")
         {
             ChangeState(State.IN_PEN);
+            other.GetComponent<Animator>().SetTrigger("cooped");
         }
     }
 }
