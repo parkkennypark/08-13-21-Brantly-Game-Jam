@@ -32,7 +32,7 @@ public class Grabbable : Interactable
     {
         if (grabbed)
         {
-            Throw();
+            StartCoroutine(Throw());
         }
         else
         {
@@ -77,6 +77,8 @@ public class Grabbable : Interactable
 
     public void Grab(Transform grabber)
     {
+        SetAnimalComponents(true);
+
         this.grabber = grabber;
         if (grabber == Player.instance.transform)
         {
@@ -89,7 +91,7 @@ public class Grabbable : Interactable
         rigidbody.isKinematic = true;
         grabbed = true;
         // isInteractable = false;
-        SetAnimalComponents(true);
+        // SetAnimalComponents(true);
 
     }
 
@@ -112,9 +114,11 @@ public class Grabbable : Interactable
         grabber = null;
     }
 
-    public void Throw()
+    public IEnumerator Throw()
     {
         SetAnimalComponents(false);
+
+        yield return new WaitForEndOfFrame();
 
         Player.instance.ClearGrabbedObject();
         rigidbody.isKinematic = false;

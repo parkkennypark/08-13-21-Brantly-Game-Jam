@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     public float accelSpeed = 10;
     public float rotationSpeed = 8;
 
+    private bool canMove;
+
     private Animator animator;
     private new Rigidbody rigidbody;
     private Vector3 velocity;
@@ -23,9 +25,24 @@ public class Player : MonoBehaviour
         particles = GetComponentInChildren<ParticleSystem>();
     }
 
+    void OnEnable()
+    {
+        GameManager.OnGameStart += OnGameStart;
+    }
+
+    void OnDisable()
+    {
+        GameManager.OnGameStart -= OnGameStart;
+    }
+
+    void OnGameStart()
+    {
+        canMove = true;
+    }
+
     void Update()
     {
-        if (!GameManager.instance.gameStarted)
+        if (!canMove)
         {
             return;
         }
@@ -75,7 +92,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!GameManager.instance.gameStarted)
+        if (!canMove)
         {
             return;
         }

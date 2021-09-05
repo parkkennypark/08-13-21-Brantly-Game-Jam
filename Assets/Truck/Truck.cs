@@ -33,11 +33,20 @@ public class Truck : MonoBehaviour
     void Start()
     {
         requestTooltip.gameObject.SetActive(false);
-        GameManager.instance.OnGameStart += OnGameStart;
 
         patience = GetComponentInChildren<Patience>();
+        Debug.Log("Patience: " + patience, patience);
         patience.SetVisible(false);
+    }
 
+    void OnEnable()
+    {
+        GameManager.OnGameStart += OnGameStart;
+    }
+
+    void OnDisable()
+    {
+        GameManager.OnGameStart -= OnGameStart;
     }
 
     void OnGameStart()
@@ -45,6 +54,11 @@ public class Truck : MonoBehaviour
         SetupStockDictionary();
         SetupGUI();
         requestTooltip.gameObject.SetActive(true);
+
+        patience = GetComponentInChildren<Patience>();
+
+        Debug.Log("Patience: " + patience, patience);
+
         patience.SetVisible(true);
         patience.StartTimer();
         patience.OnTimerTimeout += OutOfPatience;
@@ -60,7 +74,11 @@ public class Truck : MonoBehaviour
     {
         foreach (Request request in requests)
         {
-            currentStock.Add(request.itemName, 0);
+            if (!currentStock.ContainsKey(request.itemName))
+            {
+                Debug.Log(request.itemName);
+                currentStock.Add(request.itemName, 0);
+            }
         }
     }
 
@@ -68,6 +86,7 @@ public class Truck : MonoBehaviour
     {
         foreach (Request request in requests)
         {
+            print("updating " + request.itemName);
             GameObject requestUI = Instantiate(requestUIPrefab, requestUIParent);
             TextMeshProUGUI itemText = requestUI.transform.Find("Item Name Text").GetComponent<TextMeshProUGUI>();
             itemText.text = request.itemName;

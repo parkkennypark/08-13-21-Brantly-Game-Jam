@@ -13,10 +13,18 @@ public class Patience : MonoBehaviour
     public Vector2 tooltipOffset;
     public bool reverse;
 
+    public bool isTruck;
+
     private bool timedOut;
     private float timeLeft;
 
-
+    void Start()
+    {
+        if (isTruck)
+        {
+            maxTime = GameManager.instance.gameTime[GameManager.instance.currentDay - 1];
+        }
+    }
 
     void Update()
     {
@@ -44,7 +52,8 @@ public class Patience : MonoBehaviour
 
     public void SetVisible(bool visible)
     {
-        gameObject.SetActive(visible);
+        // Debug.Log("AAAA", gameObject);
+        transform.GetChild(0).gameObject.SetActive(visible);
     }
 
     public void StartTimer()

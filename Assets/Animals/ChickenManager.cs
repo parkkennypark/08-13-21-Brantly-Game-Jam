@@ -6,9 +6,10 @@ public class ChickenManager : MonoBehaviour
 {
     public GameObject chickenPrefab;
     public Transform chickenSpawnTransform;
-    public int maxChickens = 4;
+    // public int maxChickens = 4;
+    public int[] maxChickens;
 
-    public float spawnDelay;
+    public float[] spawnDelays;
     public float spawnDelayVariance;
 
     private float currSpawnDelay;
@@ -16,7 +17,16 @@ public class ChickenManager : MonoBehaviour
     void Start()
     {
         currSpawnDelay = 1000;
-        GameManager.instance.OnGameStart += OnGameStart;
+    }
+
+    void OnEnable()
+    {
+        GameManager.OnGameStart += OnGameStart;
+    }
+
+    void OnDisable()
+    {
+        GameManager.OnGameStart -= OnGameStart;
     }
 
     void OnGameStart()
@@ -35,12 +45,12 @@ public class ChickenManager : MonoBehaviour
 
     void ResetTimer()
     {
-        currSpawnDelay = spawnDelay + Random.Range(-spawnDelayVariance, spawnDelayVariance);
+        currSpawnDelay = spawnDelays[GameManager.instance.currentDay - 1] + Random.Range(-spawnDelayVariance, spawnDelayVariance);
     }
 
     void SpawnChicken()
     {
-        if (GameObject.FindObjectsOfType<Chicken>().Length >= maxChickens)
+        if (GameObject.FindObjectsOfType<Chicken>().Length >= maxChickens[GameManager.instance.currentDay - 1])
         {
             return;
         }

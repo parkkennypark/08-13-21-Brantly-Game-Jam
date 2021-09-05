@@ -19,13 +19,22 @@ public class Well : MonoBehaviour
     void Start()
     {
         timer = 1000;
-        GameManager.instance.OnGameStart += OnGameStart;
 
         patience = GetComponentInChildren<Patience>();
         patience.StopTimer();
         patience.SetVisible(false);
         spriteRenderer.enabled = false;
         patience.OnTimerTimeout += LoseGame;
+    }
+
+    void OnEnable()
+    {
+        GameManager.OnGameStart += OnGameStart;
+    }
+
+    void OnDisable()
+    {
+        GameManager.OnGameStart -= OnGameStart;
     }
 
     void OnGameStart()
@@ -36,6 +45,11 @@ public class Well : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.instance.currentDay < 3)
+        {
+            return;
+        }
+
         timer -= Time.deltaTime;
         if (timer <= 0 && currentRequest == "")
         {
